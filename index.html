@@ -156,13 +156,12 @@
                 <div id="cartTotalHeader" class="text-xs font-bold text-slate-900">R$ 0,00</div>
               </div>
             </button>
-            <!-- Relógio de Sessão -->
-<div id="sessionTimerDisplay" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-[11px] font-bold text-slate-700 border border-slate-300 shadow-sm transition-colors duration-300">
-  <i data-lucide="timer" class="w-3.5 h-3.5"></i>
-  <span id="sessionTimeLeft">30:00</span>
-</div>
+            
+            <div id="sessionTimerDisplay" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-[11px] font-bold text-slate-700 border border-slate-300 shadow-sm transition-colors duration-300">
+              <i data-lucide="timer" class="w-3.5 h-3.5"></i>
+              <span id="sessionTimeLeft">30:00</span>
+            </div>
 
-<div class="h-8 w-px bg-slate-300 hidden sm:block"></div>
             <div class="h-8 w-px bg-slate-300 hidden sm:block"></div>
             <div id="userProfileArea" class="flex items-center gap-2"></div>
           </div>
@@ -276,13 +275,13 @@
              </select>
           </div>
 
-          <div id="myOrdersTableContainer" class="overflow-x-auto"></div>
+          <div id="myOrdersListContainer" class="overflow-x-auto"></div>
         </div>
       </div>
-<!-- VIEW: ADMIN DASHBOARD -->
+      
+      <!-- VIEW: ADMIN DASHBOARD -->
       <div id="view-admin-dashboard" class="hidden space-y-6">
         <div class="flex flex-col md:flex-row gap-6">
-          <!-- Card: Barra de Progresso AVN -->
           <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex-1 flex flex-col justify-center relative overflow-hidden">
             <div class="absolute -right-6 -top-6 text-slate-50 opacity-50 pointer-events-none"><i data-lucide="target" class="w-32 h-32"></i></div>
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 z-10 flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4 text-dash-teal"></i> Meta p/ Envio ao AVN</h3>
@@ -293,7 +292,6 @@
               </div>
               <span class="text-sm font-black text-slate-300 bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">Mínimo: R$ 300,00</span>
             </div>
-            <!-- Barra de Escala Gráfica -->
             <div class="h-5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-200 z-10 relative">
               <div id="dashProgressBar" class="h-full bg-dash-coral transition-all duration-1000 ease-out flex items-center justify-end pr-2" style="width: 0%">
                   <span id="dashProgressText" class="text-[9px] font-black text-white/90 drop-shadow-md">0%</span>
@@ -301,7 +299,6 @@
             </div>
           </div>
 
-          <!-- Card: Total de Setores -->
           <div class="bg-gradient-to-br from-uffs-700 to-uffs-900 text-white rounded-3xl p-6 border border-uffs-800 shadow-sm w-full md:w-64 flex flex-col justify-between relative overflow-hidden">
             <div class="absolute -right-4 -bottom-4 text-white/10 pointer-events-none"><i data-lucide="building-2" class="w-28 h-28"></i></div>
             <h3 class="text-xs font-bold text-uffs-200 uppercase tracking-wider z-10">Setores Atendidos</h3>
@@ -311,17 +308,22 @@
           </div>
         </div>
 
-        <!-- Card: Gráfico Chart.js -->
         <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
           <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
             <div>
               <h2 class="text-xl font-black text-slate-800 flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-5 h-5 text-dash-teal"></i> Consumo por Setor</h2>
-              <p class="text-xs text-slate-500">Volume financeiro requisitado (Aprovados e Comprados) filtrado por período.</p>
+              <p class="text-xs text-slate-500">Volume financeiro requisitado filtrado por período.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2 text-xs">
               <label class="font-bold text-slate-400">Filtrar por:</label>
               <select id="dashFilterYear" onchange="window.app.renderDashboardChart()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-dash-teal">
-                <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
               </select>
               <select id="dashFilterMonth" onchange="window.app.renderDashboardChart()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-dash-teal">
                 <option value="all">Todos os Meses</option>
@@ -340,6 +342,7 @@
           </div>
         </div>
       </div>
+      
       <!-- VIEW: ADMIN ORDERS -->
       <div id="view-admin-orders" class="hidden space-y-6">
         <div class="bg-slate-100 rounded-3xl p-6 border border-slate-300 shadow-sm">
@@ -407,7 +410,7 @@
               <label for="consolidationFilterSelect" class="font-bold text-slate-600">Lote a Exibir:</label>
               <select id="consolidationFilterSelect" onchange="window.app && window.app.setConsolidationStatusFilter(this.value)" class="bg-white border border-slate-300 rounded-xl px-3 py-1.5 font-semibold text-slate-800 focus:ring-2 focus:ring-uffs-600 focus:outline-none shadow-inner text-xs">
                 <option value="active">Lote Aberto (Aprovadas + Pendentes)</option>
-                <option value="purchased">Lote Comprado no AVN</option>
+                <option value="purchased">Histórico (Comprado/Trânsito/Entregue)</option>
                 <option value="all">Histórico Completo (Todas)</option>
               </select>
             </div>
@@ -536,6 +539,16 @@
           <i data-lucide="send" class="w-4 h-4"></i><span>Enviar Requisição ao Agente de Compras</span>
         </button>
       </div>
+    </div>
+  </div>
+  
+  <!-- Modal Zoom de Imagem -->
+  <div id="imageZoomModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden cursor-zoom-out" onclick="window.app && window.app.closeImageZoom()">
+    <div class="relative max-w-4xl w-full h-full flex items-center justify-center">
+      <img id="imageZoomSrc" src="" class="max-w-full max-h-[85vh] object-contain shadow-2xl rounded-2xl">
+      <button class="absolute top-4 right-4 bg-white/10 hover:bg-rose-600 text-white p-2 rounded-full backdrop-blur-sm transition">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
     </div>
   </div>
 
@@ -734,6 +747,15 @@
       }
       function saveStorage(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) {} }
 
+      const mergeData = (localArray, serverArray) => {
+          const merged = [...localArray];
+          serverArray.forEach(sv => {
+              const idx = merged.findIndex(lv => lv.id === sv.id);
+              if (idx >= 0) merged[idx] = sv; else merged.push(sv);
+          });
+          return merged;
+      };
+
       const state = {
         currentUser: null, currentView: 'catalog', currentCategory: 'all', searchQuery: '', sortOption: 'name-asc', cart: [],
         products: loadStorage('uffs_avn_products', []), users: loadStorage('uffs_avn_users', [...DEFAULT_USERS]), orders: loadStorage('uffs_avn_orders', []),
@@ -748,7 +770,7 @@
       const app = {
         init() { this.checkAccessGate(); this.renderIcons(); this.initAsyncCloud(); },
         
-        sessionTimeLeft: 1800, // 30 minutos em segundos
+        sessionTimeLeft: 1800,
         sessionInterval: null,
 
         startSessionTimer() {
@@ -765,7 +787,6 @@
             }
           }, 1000);
 
-          // Monitora atividades para resetar o tempo (mouse, teclado, rolagem, clique)
           document.onmousemove = () => this.resetSessionTimer();
           document.onkeypress = () => this.resetSessionTimer();
           document.onclick = () => this.resetSessionTimer();
@@ -794,7 +815,6 @@
           const seconds = this.sessionTimeLeft % 60;
           timeSpan.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-          // Fica vermelho e pisca nos últimos 5 minutos
           if (this.sessionTimeLeft <= 300) {
             display.classList.remove('bg-slate-100', 'text-slate-700', 'border-slate-300');
             display.classList.add('bg-rose-100', 'text-rose-700', 'border-rose-300', 'animate-pulse');
@@ -819,7 +839,7 @@
           } else {
             if(gate) gate.classList.add('hidden'); if(wrap) wrap.classList.remove('hidden');
             this.updateHeaderProfile(); this.renderDynamicNav(); this.renderCategorySidebar(); this.renderProducts(); this.updateCartBadge(); this.navigate(state.currentView || 'catalog');
-            this.startSessionTimer(); // Inicia o relógio quando entra no sistema
+            this.startSessionTimer();
           }
         },
         
@@ -835,15 +855,17 @@
         
         logout() {
           state.currentUser = null; state.cart = []; sessionStorage.removeItem('uffs_active_user_id');
+          state.currentView = 'catalog'; 
+          
           const uInp = document.getElementById('gateUser'), pInp = document.getElementById('gatePass');
           if(uInp) uInp.value=''; if(pInp) pInp.value='';
           this.checkAccessGate(); this.showToast('Sessão encerrada com segurança.', 'info');
         },
+        
         dashboardChartInstance: null,
         renderAdminDashboard() {
           if (!state.currentUser || state.currentUser.role !== 'admin') return;
           
-          // Barra R$ 300
           const activeOrders = state.orders.filter(o => o.status === 'Pendente' || o.status === 'Aprovado');
           let totalAc = 0;
           activeOrders.forEach(o => { o.items.forEach(i => { totalAc += (Number(i.price) || 0) * i.quantity; }); });
@@ -854,21 +876,18 @@
           const txt = document.getElementById('dashProgressText');
           bar.style.width = `${perc}%`; txt.textContent = `${perc.toFixed(0)}%`;
 
-          // Transição suave de cores baseada na sua paleta
           bar.classList.remove('bg-dash-coral', 'bg-dash-orange', 'bg-dash-yellow', 'bg-uffs-500');
           if (perc < 50) bar.classList.add('bg-dash-coral');
           else if (perc < 80) bar.classList.add('bg-dash-orange');
           else if (perc < 100) bar.classList.add('bg-dash-yellow');
           else bar.classList.add('bg-uffs-500');
 
-          // Popula Select de Setores dinamicamente
           const secSelect = document.getElementById('dashFilterSector');
           if (secSelect && secSelect.options.length <= 1) {
               const uniqueSecs = [...new Set(state.users.map(u => u.sector))].filter(Boolean).sort();
               uniqueSecs.forEach(s => { const opt = document.createElement('option'); opt.value = s; opt.textContent = s; secSelect.appendChild(opt); });
           }
 
-          // Total de Setores
           document.getElementById('dashTotalSetores').textContent = new Set(state.orders.map(o => o.sector)).size;
           
           this.renderDashboardChart(); this.renderIcons();
@@ -876,7 +895,9 @@
 
         renderDashboardChart() {
           const year = document.getElementById('dashFilterYear').value, month = document.getElementById('dashFilterMonth').value, sector = document.getElementById('dashFilterSector').value;
-          let filtered = state.orders.filter(o => o.status === 'Aprovado' || o.status === 'Comprado no AVN'); // Apenas o que virou dinheiro real aprovado
+          
+          // FIX: Agora conta valores não importando se estão "Comprado", "Em Trânsito" ou "Entregue"
+          let filtered = state.orders.filter(o => ['Aprovado', 'Comprado no AVN', 'Em Trânsito', 'Entregue'].includes(o.status)); 
 
           filtered = filtered.filter(o => new Date(o.date).getFullYear().toString() === year);
           if (month !== 'all') filtered = filtered.filter(o => new Date(o.date).getMonth().toString() === month);
@@ -917,6 +938,11 @@
         
         navigate(viewId) {
           if (!state.currentUser) return this.checkAccessGate();
+          
+          if (viewId.startsWith('admin-') && state.currentUser.role !== 'admin') {
+            viewId = 'catalog';
+          }
+          
           state.currentView = viewId;
           ['view-catalog', 'view-my-orders', 'view-admin-dashboard', 'view-admin-orders', 'view-admin-consolidation', 'view-admin-users', 'view-admin-products'].forEach(id => {
             const el = document.getElementById(id); if (el) el.classList.add('hidden');
@@ -998,21 +1024,25 @@
           let h = '';
           f.forEach(p => {
             const inCart = state.cart.find(i=>i.productId===p.id); const qty = inCart?inCart.quantity:0;
+            const imgUrl = p.imageUrl ? p.imageUrl : '';
+            const onClk = imgUrl ? `onclick="window.app.openImageZoom('${imgUrl}')" title="Clique para ampliar"` : '';
+            
             h += `
-              <div class="bg-slate-100 rounded-3xl border border-slate-300 hover:border-uffs-500 hover:shadow-lg p-4 flex flex-col justify-between group">
+              <div class="bg-slate-100 rounded-3xl border border-slate-300 hover:border-uffs-500 hover:shadow-lg p-4 flex flex-col justify-between group transition">
                 <div>
                   <div class="flex justify-between items-start mb-3"><span class="bg-slate-200 px-2.5 py-0.5 rounded-md font-mono text-[11px] font-black">Cód ${p.code}</span><span class="text-[10px] text-slate-500 uppercase font-bold">${p.unit||'UN'}</span></div>
-                  <div class="h-28 bg-white rounded-2xl flex items-center justify-center text-slate-400 overflow-hidden border border-slate-200/80 mb-3 group/img">
-                    ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" class="h-full w-full object-contain p-1.5 transition-transform group-hover:scale-105" onerror="this.src=''; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">` : ''}
-                    <i data-lucide="${p.icon||'box'}" class="w-10 h-10 group-hover:text-uffs-600 ${p.imageUrl?'hidden':''}"></i>
+                  <div class="h-28 bg-white rounded-2xl flex items-center justify-center text-slate-400 overflow-hidden border border-slate-200/80 mb-3 group/img relative ${imgUrl ? 'cursor-zoom-in' : ''}" ${onClk}>
+                    ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" class="h-full w-full object-contain p-1.5 transition-transform duration-300 group-hover:scale-110" onerror="this.src=''; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">` : ''}
+                    <i data-lucide="${p.icon||'box'}" class="w-10 h-10 group-hover:text-uffs-600 ${imgUrl?'hidden':''}"></i>
+                    ${imgUrl ? `<div class="absolute inset-0 bg-slate-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none flex items-center justify-center"><i data-lucide="zoom-in" class="w-8 h-8 text-white drop-shadow-md"></i></div>` : ''}
                   </div>
                   <h4 class="text-xs font-bold text-slate-900 line-clamp-2 h-8 mb-1">${p.name}</h4><p class="text-[10px] text-slate-500 uppercase font-semibold mb-2">${p.category}</p>
                 </div>
                 <div class="pt-3 border-t border-slate-200 space-y-3">
                   <div class="flex items-baseline justify-between"><span class="text-[10px] text-slate-500">Preço AVN:</span><span class="text-base font-black text-uffs-700">R$ ${fmtMoney(p.price)}</span></div>
                   <div class="flex gap-2">
-                    <div class="flex border border-slate-300 rounded-xl bg-white"><button onclick="window.app.updateCardQty('${p.id}',-1)" class="px-2 text-slate-600"><i data-lucide="minus" class="w-3 h-3"></i></button><input type="number" id="qty-${p.id}" value="1" class="w-9 text-center bg-transparent border-0 font-bold text-xs"><button onclick="window.app.updateCardQty('${p.id}',1)" class="px-2 text-slate-600"><i data-lucide="plus" class="w-3 h-3"></i></button></div>
-                    <button onclick="window.app.addToCart('${p.id}')" class="flex-1 bg-uffs-600 text-white font-bold py-2 rounded-xl text-xs flex justify-center items-center gap-1"><i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> ${qty>0?`+${qty}`:'Solicitar'}</button>
+                    <div class="flex border border-slate-300 rounded-xl bg-white"><button onclick="window.app.updateCardQty('${p.id}',-1)" class="px-2 text-slate-600 hover:bg-slate-100 transition rounded-l-xl"><i data-lucide="minus" class="w-3 h-3"></i></button><input type="number" id="qty-${p.id}" value="1" class="w-9 text-center bg-transparent border-0 font-bold text-xs focus:outline-none"><button onclick="window.app.updateCardQty('${p.id}',1)" class="px-2 text-slate-600 hover:bg-slate-100 transition rounded-r-xl"><i data-lucide="plus" class="w-3 h-3"></i></button></div>
+                    <button onclick="window.app.addToCart('${p.id}')" class="flex-1 bg-uffs-600 hover:bg-uffs-700 text-white font-bold py-2 rounded-xl text-xs flex justify-center items-center gap-1 transition shadow-sm"><i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> ${qty>0?`+${qty}`:'Solicitar'}</button>
                   </div>
                 </div>
               </div>`;
@@ -1079,7 +1109,9 @@
           const items = state.cart.map(i => { const p=state.products.find(x=>x.id===i.productId); return {productId:i.productId, code:p?.code||'', name:p?.name||'', quantity:i.quantity, price:p?Number(p.price):0, unit:p?.unit||'UN'}; });
           const o = { id: `REQ-${new Date().getFullYear()}-${String(state.orders.length+1).padStart(3,'0')}`, date: new Date().toISOString(), userId: state.currentUser.id, userName: state.currentUser.name, sector: state.currentUser.sector, justification: just, status: 'Pendente', items };
           
-          state.orders.unshift(o); this.persistData(); if(window.cloudSyncInstance?.saveOrder) window.cloudSyncInstance.saveOrder(o);
+          state.orders.unshift(o); this.persistData(); 
+          if(window.cloudSyncInstance?.saveOrder) window.cloudSyncInstance.saveOrder(o);
+          
           state.cart=[]; this.updateCartBadge(); this.closeCart(); document.getElementById('orderJustification').value='';
           this.showToast('Requisição enviada!', 'success'); this.navigate(state.currentUser.role==='admin'?'admin-orders':'my-orders');
         },
@@ -1089,11 +1121,14 @@
           
           const filterContainer = document.getElementById('adminOrderFilterContainer');
           if (filterContainer) {
+            // FIX: Adicionado filtros para "Em Trânsito" e "Entregues" na tela do Admin
             const filters = [
               { id: 'all', label: 'Todas' },
               { id: 'Pendente', label: 'Pendentes' },
               { id: 'Aprovado', label: 'Aprovadas' },
-              { id: 'Comprado no AVN', label: 'Compradas no AVN' }
+              { id: 'Comprado no AVN', label: 'Compradas no AVN' },
+              { id: 'Em Trânsito', label: 'Em Trânsito' },
+              { id: 'Entregue', label: 'Entregues' }
             ];
             filterContainer.innerHTML = `<span class="text-slate-500 font-bold">Filtrar:</span>` + filters.map(f => {
               const isActive = state.activeAdminFilter === f.id;
@@ -1103,6 +1138,8 @@
                 if (f.id === 'Pendente') colorClass = "bg-amber-100 text-amber-900 border-amber-300";
                 if (f.id === 'Aprovado') colorClass = "bg-emerald-100 text-emerald-900 border-emerald-300";
                 if (f.id === 'Comprado no AVN') colorClass = "bg-blue-100 text-blue-900 border-blue-300";
+                if (f.id === 'Em Trânsito') colorClass = "bg-purple-100 text-purple-900 border-purple-300";
+                if (f.id === 'Entregue') colorClass = "bg-teal-100 text-teal-900 border-teal-300";
               }
               return `<button onclick="window.app.filterAdminOrders('${f.id}')" class="px-3 py-1.5 rounded-xl border transition-all font-semibold text-xs ${colorClass}">${f.label}</button>`;
             }).join('');
@@ -1131,6 +1168,10 @@
             let btns='';
             if(o.status==='Pendente') btns=`<button onclick="window.app.updateOrderStatus('${o.id}','Aprovado')" class="bg-uffs-600 hover:bg-uffs-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition">Aprovar Pedido</button> <button onclick="window.app.openRejectModal('${o.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-900 border border-rose-300 px-4 py-2 rounded-xl text-xs font-bold transition">Indeferir</button>`;
             if(o.status==='Aprovado') btns=`<button onclick="window.app.updateOrderStatus('${o.id}','Comprado no AVN')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition">Marcar como Comprado (AVN)</button>`;
+            
+            // FIX: Adicionando botões faltantes para dar andamento ao fluxo de rastreamento
+            if(o.status==='Comprado no AVN') btns=`<button onclick="window.app.updateOrderStatus('${o.id}','Em Trânsito')" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition">Avançar para Em Trânsito</button>`;
+            if(o.status==='Em Trânsito') btns=`<button onclick="window.app.updateOrderStatus('${o.id}','Entregue')" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition">Finalizar como Entregue</button>`;
             
             let trackerHTML = '';
             if (step > 0) {
@@ -1221,10 +1262,17 @@
 
         renderMyOrders() {
           const c = document.getElementById('myOrdersListContainer'); if(!c) return;
-          const userOrders = (state.orders || []).filter(o => o.userId === state.currentUser.id || o.sector === state.currentUser.sector);
+          let userOrders = (state.orders || []).filter(o => o.userId === state.currentUser.id || o.sector === state.currentUser.sector);
           
+          if (state.historyPeriodFilter !== 'all') {
+             const days = parseInt(state.historyPeriodFilter);
+             const cutoff = new Date();
+             cutoff.setDate(cutoff.getDate() - days);
+             userOrders = userOrders.filter(o => new Date(o.date) >= cutoff);
+          }
+
           if(userOrders.length === 0) {
-            c.innerHTML = `<div class="text-center py-16 text-slate-400"><p class="text-sm font-bold">Nenhuma requisição encontrada para o seu setor.</p></div>`;
+            c.innerHTML = `<div class="text-center py-16 text-slate-400"><p class="text-sm font-bold">Nenhuma requisição encontrada para o seu setor no período selecionado.</p></div>`;
             return;
           }
 
@@ -1323,7 +1371,9 @@
         
         renderConsolidation() {
           const c=document.getElementById('consolidationTableContainer'); if(!c) return;
-          let o = (state.orders||[]).filter(x => state.consolidationStatusFilter==='all' ? true : (state.consolidationStatusFilter==='active' ? (x.status==='Pendente'||x.status==='Aprovado') : x.status==='Comprado no AVN'));
+          // FIX: Filtro "purchased" agora inclui itens que já estão "Em Trânsito" ou "Entregues", pois fazem parte do Histórico
+          let o = (state.orders||[]).filter(x => state.consolidationStatusFilter==='all' ? true : (state.consolidationStatusFilter==='active' ? (x.status==='Pendente'||x.status==='Aprovado') : ['Comprado no AVN', 'Em Trânsito', 'Entregue'].includes(x.status)));
+          
           if(o.length===0){ c.innerHTML=`<div class="bg-white border border-slate-300 rounded-2xl p-8 text-center text-slate-500 font-bold">Vazio. Nenhuma requisição encontrada para este filtro.</div>`; return; }
           
           if(state.consolidationMode==='almox'){ 
@@ -1421,7 +1471,8 @@
 
         exportAlmoxarifadoExcel() {
           if (typeof XLSX === 'undefined') return this.showToast('Biblioteca Excel carregando...', 'alert');
-          let targetOrders = (state.orders || []).filter(o => state.consolidationStatusFilter === 'all' ? true : (state.consolidationStatusFilter === 'active' ? (o.status === 'Aprovado' || o.status === 'Pendente') : o.status === 'Comprado no AVN'));
+          // FIX: Permite exportar também o que já estiver Em Trânsito ou Entregue na visualização do histórico
+          let targetOrders = (state.orders || []).filter(o => state.consolidationStatusFilter === 'all' ? true : (state.consolidationStatusFilter === 'active' ? (o.status === 'Aprovado' || o.status === 'Pendente') : ['Comprado no AVN', 'Em Trânsito', 'Entregue'].includes(o.status)));
           if (targetOrders.length === 0) return this.showToast('Sem pedidos para exportar.', 'alert');
 
           const rows = [];
@@ -1450,7 +1501,7 @@
         
         exportConsolidationToExcel() {
           if (typeof XLSX === 'undefined') return this.showToast('Biblioteca Excel carregando...', 'alert');
-          let targetOrders = (state.orders || []).filter(o => state.consolidationStatusFilter === 'all' ? true : (state.consolidationStatusFilter === 'active' ? (o.status === 'Aprovado' || o.status === 'Pendente') : o.status === 'Comprado no AVN'));
+          let targetOrders = (state.orders || []).filter(o => state.consolidationStatusFilter === 'all' ? true : (state.consolidationStatusFilter === 'active' ? (o.status === 'Aprovado' || o.status === 'Pendente') : ['Comprado no AVN', 'Em Trânsito', 'Entregue'].includes(o.status)));
           if (targetOrders.length === 0) return this.showToast('Sem itens para exportar.', 'alert');
 
           const map = {};
@@ -1532,7 +1583,17 @@
             try {
               const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'});
               const firstSheetName = wb.SheetNames[0];
-              const rows=XLSX.utils.sheet_to_json(wb.Sheets[firstSheetName], {defval: ""});
+              
+              const rawRows = XLSX.utils.sheet_to_json(wb.Sheets[firstSheetName], { header: 1 });
+              let headerIdx = 0;
+              for(let i = 0; i < Math.min(10, rawRows.length); i++) {
+                if(rawRows[i] && rawRows[i].some(cell => typeof cell === 'string' && (cell.toLowerCase().includes('nome do item') || cell.toLowerCase().includes('cód. item') || cell.toLowerCase().includes('descrição')))) {
+                  headerIdx = i;
+                  break;
+                }
+              }
+
+              const rows=XLSX.utils.sheet_to_json(wb.Sheets[firstSheetName], { range: headerIdx, defval: "" });
               
               const nmlz = (s) => String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
               const getVal = (row, cands) => { 
@@ -1547,12 +1608,20 @@
                 const cod = getVal(r,['código','codigo','cod','cód. item','código do item','cód','item','cód. clie','coditem','cod. item'])||String(1000+i);
                 const nom = getVal(r,['descrição','descricao','nome do item','especificação','material','nomedoitem','nome do item'])||'Sem descrição';
                 const cat = getVal(r,['categoria','família','familia','grupo','segmento'])||'Diversos';
+                
                 const prc = getVal(r,['preço','preco','valor unitário','valor unitario','valorunitario'])||0;
+                
+                let cln = String(prc).replace(/[R$\s]/g, '');
+                if (cln.includes('.') && cln.includes(',')) {
+                    cln = cln.replace(/\./g, '').replace(',', '.');
+                } else if (cln.includes(',')) {
+                    cln = cln.replace(',', '.');
+                }
+                const parsedPrice = parseFloat(cln) || 0;
+
                 const und = getVal(r,['unidade','und','un'])||'UN';
                 
-                // AUTOMATIZAÇÃO INTELIGENTE DE IMAGENS COM ZEROS À ESQUERDA:
                 const cleanCode = String(cod).trim();
-                // Se o código tiver menos de 6 dígitos, preenche com zeros à esquerda
                 const paddedCode = cleanCode.length < 6 ? cleanCode.padStart(6, '0') : cleanCode;
                 const defaultImg = `https://www.supplymanager.com.br/fotos/high/${paddedCode}.jpg`;
                 
@@ -1561,7 +1630,7 @@
                   code: cleanCode, 
                   name: String(nom).trim(), 
                   category: String(cat).trim() || 'Diversos', 
-                  price: parseFloat(String(prc).replace('R$','').replace(',','.'))||0, 
+                  price: parsedPrice, 
                   unit: String(und).trim() || 'UN', 
                   imageUrl: defaultImg 
                 };
@@ -1659,6 +1728,15 @@
         showHelpModal() { document.getElementById('helpModal').classList.remove('hidden'); },
         closeHelpModal() { document.getElementById('helpModal').classList.add('hidden'); },
 
+        openImageZoom(url) {
+          const m = document.getElementById('imageZoomModal'), img = document.getElementById('imageZoomSrc');
+          if(m && img && url) { img.src = url; m.classList.remove('hidden'); }
+        },
+        closeImageZoom() {
+          const m = document.getElementById('imageZoomModal'), img = document.getElementById('imageZoomSrc');
+          if(m && img) { m.classList.add('hidden'); img.src = ''; }
+        },
+
         showToast(m, t='success') { const n=document.getElementById('toastNotification'); document.getElementById('toastMessage').textContent=m; n.classList.remove('translate-y-20','opacity-0'); setTimeout(()=>n.classList.add('translate-y-20','opacity-0'),3000); },
         
         async initAsyncCloud() {
@@ -1669,10 +1747,31 @@
             const { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
             const db=getFirestore(initializeApp(FIREBASE_CONFIG)); try{ await signInAnonymously(getAuth()); }catch(e){}
             if(st)st.textContent='Nuvem Conectada (Firebase)'; if(sd)sd.className='w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
-            window.cloudSyncInstance={ saveProduct:p=>setDoc(doc(db,'products',p.id),p), deleteProduct:id=>deleteDoc(doc(db,'products',id)), clearAllProducts:async ids=>{for(const id of ids){await deleteDoc(doc(db,'products',id));}}, saveUser:u=>setDoc(doc(db,'users',u.id),u), deleteUser:id=>deleteDoc(doc(db,'users',id)), saveOrder:o=>setDoc(doc(db,'orders',o.id),o) };
-            onSnapshot(collection(db,'products'), s=>{ if(!s.empty){ state.products=[]; s.forEach(d=>state.products.push(d.data())); app.persistData(); app.renderCategorySidebar(); app.renderProducts(); app.renderAdminProducts(); } });
-            onSnapshot(collection(db,'users'), s=>{ if(!s.empty){ state.users=[]; s.forEach(d=>state.users.push(d.data())); app.persistData(); app.renderUsersList(); } });
-            onSnapshot(collection(db,'orders'), s=>{ if(!s.empty){ state.orders=[]; s.forEach(d=>state.orders.push(d.data())); state.orders.sort((a,b)=>new Date(b.date)-new Date(a.date)); app.persistData(); app.renderAdminOrders(); app.renderMyOrders(); app.renderConsolidation(); app.renderDynamicNav(); } });
+            
+            window.cloudSyncInstance={ 
+              saveProduct: p => setDoc(doc(db,'products',p.id),p).catch(console.error), 
+              deleteProduct: id => deleteDoc(doc(db,'products',id)).catch(console.error), 
+              clearAllProducts: async ids => { for(const id of ids){ await deleteDoc(doc(db,'products',id)).catch(console.error); } }, 
+              saveUser: u => setDoc(doc(db,'users',u.id),u).catch(console.error), 
+              deleteUser: id => deleteDoc(doc(db,'users',id)).catch(console.error), 
+              saveOrder: o => setDoc(doc(db,'orders',o.id),o).catch(console.error) 
+            };
+            
+            onSnapshot(collection(db,'products'), s => { 
+               const serv = []; s.forEach(d => serv.push(d.data()));
+               state.products = mergeData(state.products, serv);
+               app.persistData(); app.renderCategorySidebar(); app.renderProducts(); app.renderAdminProducts(); 
+            });
+            onSnapshot(collection(db,'users'), s => { 
+               const serv = []; s.forEach(d => serv.push(d.data()));
+               state.users = mergeData(state.users, serv);
+               app.persistData(); app.renderUsersList(); 
+            });
+            onSnapshot(collection(db,'orders'), s => { 
+               const serv = []; s.forEach(d => serv.push(d.data()));
+               state.orders = mergeData(state.orders, serv).sort((a,b)=>new Date(b.date)-new Date(a.date));
+               app.persistData(); app.renderAdminOrders(); app.renderMyOrders(); app.renderConsolidation(); app.renderDynamicNav(); 
+            });
           } catch(e) { if(st)st.textContent='Modo Local'; }
         }
       }; window.app = app; document.addEventListener('DOMContentLoaded', ()=>app.init());
