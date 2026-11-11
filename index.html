@@ -1578,98 +1578,119 @@
         closeExcelImportModal() { document.getElementById('excelModal').classList.add('hidden'); },
         
         handleExcelFile(e) {
-          const f=e.target.files[0]; if(!f) return; const r=new FileReader();
-          r.onload=(ev)=>{
+          const f = e.target.files[0]; if (!f) return; const r = new FileReader();
+          r.onload = (ev) => {
             try {
-              const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'});
+              // FIX 1: codepage: 65001 força a leitura correta de acentos (UTF-8) em arquivos CSV
+              const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array', codepage: 65001 });
               const firstSheetName = wb.SheetNames[0];
               
-              const rawRows = XLSX.utils.sheet_to_json(wb.Sheets[firstSheetName], { header: 1 });
+              const rawRows = XLSX.utils.sheet_to_json(wb.Sheets[firstSheetName], { header: 1, raw: false });
               let headerIdx = 0;
-              for(let i = 0; i < Math.min(10, rawRows.length); i++) {
-                if(rawRows[i] && rawRows[i].some(cell => typeof cell === 'string' && (cell.toLowerCase().includes('nome do item') || cell.toLowerCase().includes('cód. item') || cell.toLowerCase().includes('descrição')))) {
+              for (let i = 0; i < Math.min(10, rawRows.length); i++) {
+                if (rawRows[i] && rawRows[i].some(cell => typeof cell === 'string' && (cell.toLowerCase().includes('nome do item') || cell.toLowerCase().includes('item') || cell.toLowerCase().includes('descri')))) {
                   headerIdx = i;
                   break;
                 }
               }
 
-              const rows=XLSX.utils.sheet_to_json(wb.Sheets[firstSheetName], { range: headerIdx, defval: "" });
+              // raw: false garante que zeros à esquerda (ex: "000728") sejam preservados
+              const rows = XLSX.utils.sheet_to_json(wb.Sheets[firstSheetName], { range: headerIdx, defval: "", raw: false });
               
-              const nmlz = (s) => String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
+              // Função auxiliar caso algum texto já venha com erro de codificação
+              const fixMojibake = (str) => {
+                let s = String(str || '');
+                if (s.includes('Ã') || s.includes('Â')) {
+                  try { s = decodeURIComponent(escape(s)); } catch (err) {}
+                }
+                return s.trim();
+              };
+
+              const nmlz = (s) => fixMojibake(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
               const getVal = (row, cands) => { 
-                const keys=Object.keys(row), nC=cands.map(nmlz); 
-                for(let k of keys) { 
-                  if(nC.includes(nmlz(k)) && row[k]!==undefined && String(row[k]).trim()!=='') return row[k]; 
+                const keys = Object.keys(row), nC = cands.map(nmlz); 
+                for (let k of keys) { 
+                  if (nC.includes(nmlz(k)) && row[k] !== undefined && String(row[k]).trim() !== '') return fixMojibake(row[k]); 
                 } 
                 return null; 
               };
 
-              const parsed = rows.map((r,i) => {
-                const cod = getVal(r,['código','codigo','cod','cód. item','código do item','cód','item','cód. clie','coditem','cod. item'])||String(1000+i);
-                const nom = getVal(r,['descrição','descricao','nome do item','especificação','material','nomedoitem','nome do item'])||'Sem descrição';
-                const cat = getVal(r,['categoria','família','familia','grupo','segmento'])||'Diversos';
-                
-                const prc = getVal(r,['preço','preco','valor unitário','valor unitario','valorunitario'])||0;
+              const parsed = rows.map((r, i) => {
+                const rawCod = getVal(r, ['código', 'codigo', 'cod', 'cód. item', 'código do item', 'cód', 'item', 'cód. clie', 'coditem', 'cod. item']) || String(1000 + i);
+                const nom = getVal(r, ['descrição', 'descricao', 'nome do item', 'especificação', 'material', 'nomedoitem']) || 'Sem descrição';
+                const cat = getVal(r, ['categoria', 'família', 'familia', 'grupo', 'segmento']) || 'Diversos';
+                const prc = getVal(r, ['preço', 'preco', 'valor unitário', 'valor unitario', 'valorunitario']) || 0;
                 
                 let cln = String(prc).replace(/[R$\s]/g, '');
                 if (cln.includes('.') && cln.includes(',')) {
-                    cln = cln.replace(/\./g, '').replace(',', '.');
+                  cln = cln.replace(/\./g, '').replace(',', '.');
                 } else if (cln.includes(',')) {
-                    cln = cln.replace(',', '.');
+                  cln = cln.replace(',', '.');
                 }
                 const parsedPrice = parseFloat(cln) || 0;
 
-                const und = getVal(r,['unidade','und','un'])||'UN';
+                const und = getVal(r, ['unidade', 'und', 'un']) || 'UN';
                 
-                const cleanCode = String(cod).trim();
-                const paddedCode = cleanCode.length < 6 ? cleanCode.padStart(6, '0') : cleanCode;
+                // FIX 2: Preserva o formato de 6 dígitos com zero à esquerda (ex: 000728) para puxar a foto certa
+                const cleanCode = String(rawCod).trim();
+                const paddedCode = /^\d+$/.test(cleanCode) && cleanCode.length < 6 ? cleanCode.padStart(6, '0') : cleanCode;
                 const defaultImg = `https://www.supplymanager.com.br/fotos/high/${paddedCode}.jpg`;
                 
+                // Se já houver uma foto personalizada salva no sistema para este item (pelo código ou pelo nome), mantém a foto personalizada!
+                const existingProd = state.products.find(p => 
+                  String(p.code).replace(/^0+/, '') === cleanCode.replace(/^0+/, '') || 
+                  (p.name && nmlz(p.name) === nmlz(nom))
+                );
+                const savedCustomImg = (existingProd && existingProd.imageUrl && !existingProd.imageUrl.includes('/0010') && !existingProd.imageUrl.includes('/0011')) 
+                  ? existingProd.imageUrl 
+                  : defaultImg;
+
                 return { 
-                  id: 'prod_'+cleanCode.replace(/[^a-zA-Z0-9_-]/g,'_'), 
-                  code: cleanCode, 
+                  id: 'prod_' + paddedCode.replace(/[^a-zA-Z0-9_-]/g, '_'), 
+                  code: paddedCode, 
                   name: String(nom).trim(), 
                   category: String(cat).trim() || 'Diversos', 
                   price: parsedPrice, 
                   unit: String(und).trim() || 'UN', 
-                  imageUrl: defaultImg 
+                  imageUrl: savedCustomImg,
+                  hidden: existingProd ? (existingProd.hidden || false) : false
                 };
               });
               
               state.excelParsedRows = parsed.filter(p => p.code && p.code !== 'undefined' && p.code !== '');
               
               let pRows = '';
-              state.excelParsedRows.slice(0, 5).forEach(p => { pRows+= `<tr><td class="p-2 font-mono text-slate-600">${p.code}</td><td class="p-2 font-medium">${p.name}</td><td class="p-2">${p.category}</td><td class="p-2 text-right font-bold text-uffs-700">R$ ${fmtMoney(p.price)}</td></tr>`});
+              state.excelParsedRows.slice(0, 5).forEach(p => { pRows += `<tr><td class="p-2 font-mono text-slate-600">${p.code}</td><td class="p-2 font-medium">${p.name}</td><td class="p-2">${p.category}</td><td class="p-2 text-right font-bold text-uffs-700">R$ ${fmtMoney(p.price)}</td></tr>`});
               document.getElementById('excelPreviewRows').innerHTML = pRows;
               
               document.getElementById('excelPreviewContainer').classList.remove('hidden'); 
-              document.getElementById('excelItemCount').textContent=`${state.excelParsedRows.length} itens detectados`;
-              document.getElementById('btnConfirmExcelImport').disabled=false;
-            } catch(err){ 
+              document.getElementById('excelItemCount').textContent = `${state.excelParsedRows.length} itens detectados`;
+              document.getElementById('btnConfirmExcelImport').disabled = false;
+            } catch (err) { 
               console.error(err);
-              this.showToast('Erro ao ler Excel.','alert'); 
+              this.showToast('Erro ao ler planilha.', 'alert'); 
             }
           }; r.readAsArrayBuffer(f);
         },
         
         async confirmExcelImport() {
           const btn = document.getElementById('btnConfirmExcelImport');
-          if(btn) { btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Atualizando...'; }
+          if (btn) { btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Atualizando...'; }
           
           try {
             const rep = document.getElementById('replaceExistingCatalogCheckbox').checked;
             
-            if(rep) { 
-              if(window.cloudSyncInstance?.clearAllProducts) {
+            if (rep) { 
+              if (window.cloudSyncInstance?.clearAllProducts) {
                 const existingIds = state.products.map(p => p.id);
                 await window.cloudSyncInstance.clearAllProducts(existingIds);
               }
               state.products = [...state.excelParsedRows]; 
             } else { 
               state.excelParsedRows.forEach(i => { 
-                const idx = state.products.findIndex(p => p.code === i.code); 
-                if(idx >= 0){ 
-                  i.imageUrl = i.imageUrl || state.products[idx].imageUrl; 
+                const idx = state.products.findIndex(p => String(p.code).replace(/^0+/, '') === String(i.code).replace(/^0+/, '')); 
+                if (idx >= 0) { 
+                  i.imageUrl = state.products[idx].imageUrl || i.imageUrl; 
                   i.hidden = state.products[idx].hidden || false; 
                   state.products[idx] = i; 
                 } else {
@@ -1680,8 +1701,8 @@
             
             this.persistData(); 
             
-            if(window.cloudSyncInstance?.saveProduct) {
-              for(const p of state.products) {
+            if (window.cloudSyncInstance?.saveProduct) {
+              for (const p of state.products) {
                 await window.cloudSyncInstance.saveProduct(p);
               }
             }
@@ -1691,11 +1712,11 @@
             this.renderProducts(); 
             this.renderAdminProducts(); 
             this.showToast('Catálogo atualizado com sucesso!', 'success');
-          } catch(e) {
+          } catch (e) {
             console.error(e);
             this.showToast('Erro ao atualizar catálogo.', 'alert');
           } finally {
-            if(btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Atualizar Catálogo'; }
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Atualizar Catálogo'; }
           }
         },
         
@@ -1757,9 +1778,10 @@
               saveOrder: o => setDoc(doc(db,'orders',o.id),o).catch(console.error) 
             };
             
+            // FIX 3: Quando o servidor tiver produtos, espelha exatamente a lista da nuvem para não ressuscitar itens excluídos (1000, 1001...)
             onSnapshot(collection(db,'products'), s => { 
                const serv = []; s.forEach(d => serv.push(d.data()));
-               state.products = mergeData(state.products, serv);
+               if (serv.length > 0) state.products = serv;
                app.persistData(); app.renderCategorySidebar(); app.renderProducts(); app.renderAdminProducts(); 
             });
             onSnapshot(collection(db,'users'), s => { 
